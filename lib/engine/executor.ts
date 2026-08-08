@@ -97,10 +97,10 @@ export async function executeWorkRequest(
   const steps = executionPlan.steps;
   const totalStepsCount = steps.length;
 
-  // Log execution start if not already started
-  if (workRequest.status === "PLANNED") {
+  // Transition to IN_PROGRESS if started from PLANNED or resumed from WAITING_FOR_APPROVAL
+  if (workRequest.status === "PLANNED" || workRequest.status === "WAITING_FOR_APPROVAL") {
     await transitionWorkRequest(workRequestId, workRequest.status, "IN_PROGRESS");
-    await createActivityEvent(workRequestId, "EXECUTION_STARTED", "Workflow execution started.");
+    await createActivityEvent(workRequestId, "EXECUTION_STARTED", "Workflow execution active.");
   }
 
   for (const step of steps as any[]) {
@@ -291,11 +291,14 @@ export async function executeWorkRequest(
     (s: any) => s.status === "COMPLETED" || s.status === "SKIPPED"
   ).length;
 
-  // Mark WorkRequest COMPLETED if all steps finished successfully
-  if (completedCount === totalStepsCount) {
+  // Mark WorkRequest COMPLETED if all steps finished successfully and request is in active progress
+  if (
+    updatedWorkRequest?.status === "IN_PROGRESS" &&
+    completedCount === totalStepsCount
+  ) {
     await transitionWorkRequest(
       workRequestId,
-      updatedWorkRequest?.status ?? "IN_PROGRESS",
+      "IN_PROGRESS",
       "COMPLETED"
     );
     await createActivityEvent(

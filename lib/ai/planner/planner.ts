@@ -128,9 +128,7 @@ export async function generateExecutionPlan(
   // Prepare database inputs with explicit step statuses
   const stepsInput = validatedSteps.map((step) => {
     let initialStatus: ExecutionStepStatus = "PENDING";
-    if (step.route === "PREPARE_FOR_HUMAN_REVIEW") {
-      initialStatus = "WAITING_FOR_APPROVAL";
-    } else if (step.route === "REQUIRES_CLARIFICATION" || step.route === "CANNOT_EXECUTE") {
+    if (step.route === "REQUIRES_CLARIFICATION" || step.route === "CANNOT_EXECUTE") {
       initialStatus = "SKIPPED";
     }
 
