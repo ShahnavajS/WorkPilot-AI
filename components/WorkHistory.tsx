@@ -24,15 +24,15 @@ export const WorkHistory: React.FC<WorkHistoryProps> = ({
   onNewWork,
 }) => {
   return (
-    <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-5 space-y-4 shadow-xl">
+    <div className="bg-[#1e2329] border border-[#2b3139] rounded-xl p-5 space-y-4 shadow-2xl">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-[#707a8a]">
           Work History ({requests.length})
         </h3>
         <button
           id="new-work-btn"
           onClick={onNewWork}
-          className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg shadow border border-indigo-500/30 transition-colors flex items-center space-x-1"
+          className="px-3 py-1.5 bg-[#fcd535] hover:bg-[#f0b90b] text-[#181a20] text-xs font-bold rounded-md shadow border border-[#fcd535] transition-colors flex items-center space-x-1"
         >
           <span>+ New Work</span>
         </button>
@@ -40,7 +40,7 @@ export const WorkHistory: React.FC<WorkHistoryProps> = ({
 
       <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
         {requests.length === 0 ? (
-          <p className="text-xs text-slate-500 italic p-2">No previous work requests found.</p>
+          <p className="text-xs text-[#707a8a] italic p-2">No previous work requests found.</p>
         ) : (
           requests.map((req) => {
             const badge = getStatusBadge(req.status);
@@ -49,17 +49,17 @@ export const WorkHistory: React.FC<WorkHistoryProps> = ({
               <button
                 key={req.id}
                 onClick={() => onSelect(req.id)}
-                className={`w-full text-left p-3 rounded-lg border transition-all space-y-1 ${
+                className={`w-full text-left p-3 rounded-lg border transition-all space-y-1.5 ${
                   isSelected
-                    ? "bg-indigo-950/40 border-indigo-500/50 text-white"
-                    : "bg-slate-950/60 border-slate-800/80 hover:border-slate-700 text-slate-300"
+                    ? "bg-[#2b3139] border-[#fcd535]/60 text-white font-semibold shadow-md"
+                    : "bg-[#0b0e11] border-[#2b3139] hover:border-[#707a8a] text-[#eaecef]"
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <span className={`px-2 py-0.5 rounded text-[10px] font-mono border ${badge.bg}`}>
                     {badge.label}
                   </span>
-                  <span className="text-[10px] font-mono text-slate-500">
+                  <span className="text-[10px] font-mono text-[#707a8a]">
                     {new Date(req.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                   </span>
                 </div>

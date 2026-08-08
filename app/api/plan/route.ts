@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { generateExecutionPlan } from "@/lib/ai/planner";
 import { createApiErrorResponse } from "@/lib/utils/api-response";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: Request) {
   try {
     const body = await request.json().catch(() => null);

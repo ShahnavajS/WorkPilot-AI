@@ -350,7 +350,7 @@ describe("Workflow Executor & Execution State Machine (Phase 6)", () => {
 
   it("Test 13 — Invalid tool input: handles validation errors safely", async () => {
     const wr = { id: "wr_13", originalText: "Bad input test", status: "PLANNED" };
-    const steps = [{ id: "s1", route: "EXECUTE_AUTOMATICALLY", toolName: "website_check", description: "" }];
+    const steps = [{ id: "s1", route: "EXECUTE_AUTOMATICALLY", toolName: "create_task", description: "" }];
     (prisma as any)._seedPlan(wr, steps);
 
     const summary = await executeWorkRequest("wr_13");

@@ -219,19 +219,24 @@ export function Workbench() {
 
   return (
     <div className="space-y-8">
-      {/* Top Banner & Active Status Header */}
-      <section className="bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Top Hero Callout Banner */}
+      <section className="bg-[#1e2329] border border-[#2b3139] rounded-xl p-6 shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <h2 className="text-xl font-bold text-white">Work Intake &amp; Execution Workbench</h2>
-          <p className="text-xs text-slate-300">
-            Intake unstructured requests &rarr; AI interpretation &rarr; Agentic planning &rarr; Bounded tools &rarr; Human-in-the-loop governance.
+          <div className="flex items-center space-x-2">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#fcd535] bg-[#fcd535]/10 px-2 py-0.5 rounded border border-[#fcd535]/20">
+              AGENTIC WORKFLOW ENGINE
+            </span>
+          </div>
+          <h2 className="text-2xl font-bold text-white tracking-tight">Work Intake &amp; Execution Workbench</h2>
+          <p className="text-xs text-[#929aa5]">
+            Unstructured intake &rarr; Structured interpretation &rarr; Agentic planning &rarr; Bounded tools &rarr; Human approval &rarr; Audit trail.
           </p>
         </div>
 
         {activeWorkRequest && (
           <button
             onClick={() => setActiveWorkRequest(null)}
-            className="self-start md:self-auto px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg border border-indigo-500/30 transition-all"
+            className="self-start md:self-auto px-4 py-2 bg-[#fcd535] hover:bg-[#f0b90b] text-[#181a20] text-xs font-bold uppercase rounded-md shadow border border-[#fcd535] transition-all"
           >
             + New Work Request
           </button>
@@ -240,14 +245,14 @@ export function Workbench() {
 
       {/* Global Error Banner */}
       {globalError && (
-        <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs text-rose-400 flex items-center justify-between">
+        <div className="p-4 bg-[#f6465d]/15 border border-[#f6465d]/30 rounded-xl text-xs text-[#f6465d] flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <span className="text-base">⚠</span>
+            <span className="text-base font-bold">⚠</span>
             <span>{globalError}</span>
           </div>
           <button
             onClick={() => setGlobalError(null)}
-            className="text-rose-400 hover:text-rose-200 text-xs underline"
+            className="text-[#f6465d] hover:text-white text-xs underline font-semibold"
           >
             Dismiss
           </button>
@@ -271,24 +276,24 @@ export function Workbench() {
               )}
 
               {activeWorkRequest.status === "FAILED" && (
-                <div className="bg-rose-950/40 border border-rose-500/30 rounded-xl p-5 space-y-2 text-xs text-rose-300">
-                  <h4 className="font-bold text-rose-400 uppercase tracking-wider flex items-center space-x-2">
+                <div className="bg-[#f6465d]/10 border border-[#f6465d]/30 rounded-xl p-5 space-y-2 text-xs text-[#f6465d]">
+                  <h4 className="font-bold uppercase tracking-wider flex items-center space-x-2">
                     <span>✕</span>
                     <span>Workflow Execution Failed</span>
                   </h4>
-                  <p>
+                  <p className="text-[#929aa5]">
                     The execution engine stopped processing planned actions because a tool or step encountered an unrecoverable failure.
                   </p>
                 </div>
               )}
 
               {activeWorkRequest.status === "COMPLETED" && (
-                <div className="bg-emerald-950/30 border border-emerald-500/30 rounded-xl p-5 space-y-2 text-xs text-emerald-300">
-                  <h4 className="font-bold text-emerald-400 uppercase tracking-wider flex items-center space-x-2">
+                <div className="bg-[#0ecb81]/10 border border-[#0ecb81]/30 rounded-xl p-5 space-y-2 text-xs text-[#0ecb81]">
+                  <h4 className="font-bold uppercase tracking-wider flex items-center space-x-2">
                     <span>✓</span>
                     <span>All Planned Actions Completed Successfully</span>
                   </h4>
-                  <p>
+                  <p className="text-[#929aa5]">
                     The agentic workflow finished all execution steps and persisted generated artifacts in PostgreSQL.
                   </p>
                 </div>
@@ -346,14 +351,14 @@ export function Workbench() {
           />
 
           {/* Architecture Reference Box */}
-          <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-5 space-y-3 text-xs">
-            <h4 className="font-semibold text-slate-300 uppercase tracking-wider text-[11px]">
-              System Architecture
+          <div className="bg-[#1e2329] border border-[#2b3139] rounded-xl p-5 space-y-3 text-xs">
+            <h4 className="font-semibold text-[#fcd535] uppercase tracking-wider text-[11px]">
+              System Architecture &amp; Governance
             </h4>
-            <div className="space-y-2 text-slate-400 text-[11px]">
-              <p>• <strong className="text-slate-200">OpenAI &amp; Zod:</strong> Strict JSON Schemas for zero-hallucination interpretation &amp; planning.</p>
-              <p>• <strong className="text-slate-200">Bounded Tools:</strong> Registered `create_task`, `draft_communication`, `generate_brief`, `website_check`.</p>
-              <p>• <strong className="text-slate-200">HITL Governance:</strong> Human approval required for communication drafts before completion.</p>
+            <div className="space-y-2 text-[#929aa5] text-[11px]">
+              <p>• <strong className="text-white">Groq / OpenAI &amp; Zod:</strong> Strict JSON Schemas for zero-hallucination interpretation &amp; planning.</p>
+              <p>• <strong className="text-white">Bounded Tools:</strong> Registered `create_task`, `draft_communication`, `generate_brief`, `website_check`.</p>
+              <p>• <strong className="text-white">HITL Governance:</strong> Human approval required for external communication drafts before completion.</p>
             </div>
           </div>
         </div>

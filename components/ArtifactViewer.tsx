@@ -23,13 +23,13 @@ export const ArtifactViewer: React.FC<ArtifactViewerProps> = ({ artifacts }) => 
   const current = artifacts[selectedIndex] || artifacts[0];
 
   return (
-    <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-6 space-y-4 shadow-xl">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+    <div className="bg-[#1e2329] border border-[#2b3139] rounded-xl p-6 space-y-4 shadow-2xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#2b3139] pb-3">
         <div>
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#707a8a]">
             Generated Work Artifacts ({artifacts.length})
-          </h3>
-          <h4 className="text-sm font-bold text-white mt-0.5">{current.title}</h4>
+          </span>
+          <h4 className="text-sm font-bold text-white tracking-tight mt-0.5">{current.title}</h4>
         </div>
 
         {/* Artifact selector tabs */}
@@ -39,10 +39,10 @@ export const ArtifactViewer: React.FC<ArtifactViewerProps> = ({ artifacts }) => 
               <button
                 key={art.id || idx}
                 onClick={() => setSelectedIndex(idx)}
-                className={`px-3 py-1 text-xs font-mono rounded-lg border transition-colors ${
+                className={`px-3 py-1 text-xs font-mono font-semibold rounded-md border transition-colors ${
                   idx === selectedIndex
-                    ? "bg-indigo-600 text-white border-indigo-500"
-                    : "bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200"
+                    ? "bg-[#fcd535] text-[#181a20] border-[#fcd535]"
+                    : "bg-[#0b0e11] text-[#707a8a] border-[#2b3139] hover:text-[#eaecef]"
                 }`}
               >
                 {art.type} #{idx + 1}
@@ -53,11 +53,11 @@ export const ArtifactViewer: React.FC<ArtifactViewerProps> = ({ artifacts }) => 
       </div>
 
       {/* Render Current Artifact */}
-      <div className="bg-slate-950/80 border border-slate-800 rounded-lg p-4 font-mono text-xs text-slate-200 whitespace-pre-wrap leading-relaxed max-h-96 overflow-y-auto">
+      <div className="bg-[#0b0e11] border border-[#2b3139] rounded-lg p-4 font-mono text-xs text-[#eaecef] whitespace-pre-wrap leading-relaxed max-h-96 overflow-y-auto">
         {current.content}
       </div>
 
-      <div className="flex items-center justify-between text-[11px] text-slate-500 font-mono">
+      <div className="flex items-center justify-between text-[11px] text-[#707a8a] font-mono">
         <span>Type: {current.type}</span>
         <span>Generated: {new Date(current.createdAt).toLocaleTimeString()}</span>
       </div>

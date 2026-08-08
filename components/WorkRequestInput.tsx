@@ -9,116 +9,117 @@ interface WorkRequestInputProps {
 
 const PRESET_SCENARIOS = [
   {
-    name: "Scenario 1 — Routine Business Work",
-    text: "Summarize our partner discussion, extract follow-ups, draft a thank-you email to the partner, and set a 7-day reminder for follow-up.",
+    id: "scenario-1",
+    label: "Scenario 1 — Routine Business Work",
+    text: "Summarize a partner discussion, extract follow-ups, draft a thank-you email, and set a 7-day reminder.",
   },
   {
-    name: "Scenario 2 — Technical Website Check",
-    text: "Review hedamo.com, run whatever automated checks the prototype actually supports, and produce a short technical report.",
+    id: "scenario-2",
+    label: "Scenario 2 — HEDAMO Website Review",
+    text: "Review hedamo.com, run whatever automated checks your prototype actually supports, and produce a short technical report.",
   },
   {
-    name: "Scenario 3 — Ambiguous Request",
+    id: "scenario-3",
+    label: "Scenario 3 — Ambiguous Request",
     text: "Please take care of the documentation and send it to everyone before the meeting.",
   },
 ];
 
 export const WorkRequestInput: React.FC<WorkRequestInputProps> = ({ onSubmit, isLoading }) => {
-  const [text, setText] = useState("");
+  const [inputText, setInputText] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!text.trim()) {
-      setError("Please paste or type a work request before submitting.");
+    if (!inputText.trim()) {
+      setError("Please enter a work request or select a preset scenario.");
       return;
     }
-
     setError(null);
-    try {
-      await onSubmit(text.trim());
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to process intake request.";
-      setError(msg);
-    }
+    await onSubmit(inputText.trim());
   };
 
-  const handleSelectPreset = (presetText: string) => {
-    setText(presetText);
+  const handlePresetSelect = (text: string) => {
+    setInputText(text);
     setError(null);
   };
 
   return (
-    <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-6 space-y-4 shadow-xl">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <div>
-          <h2 className="text-lg font-bold text-white">Work Request Intake</h2>
-          <p className="text-xs text-slate-400">
-            Paste an email, meeting notes, customer request, founder instruction, or bug report.
-          </p>
-        </div>
-        <div className="flex items-center space-x-1">
-          <span className="text-[11px] text-slate-500 font-mono">Preset Scenarios:</span>
+    <div className="bg-[#1e2329] border border-[#2b3139] rounded-xl p-6 space-y-6 shadow-2xl">
+      {/* Header */}
+      <div className="space-y-1 border-b border-[#2b3139] pb-4">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-[#fcd535]">
+          Intake &amp; Interpretation Phase
+        </span>
+        <h3 className="text-xl font-bold text-white tracking-tight">Submit Work Request</h3>
+        <p className="text-xs text-[#707a8a]">
+          Paste unstructured meeting notes, emails, or operational requests for AI interpretation and agentic routing.
+        </p>
+      </div>
+
+      {/* Preset Scenario Buttons */}
+      <div className="space-y-2">
+        <label className="text-xs font-semibold text-[#929aa5] uppercase tracking-wider block">
+          Preset Demo Scenarios
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {PRESET_SCENARIOS.map((preset) => (
+            <button
+              key={preset.id}
+              type="button"
+              id={preset.id}
+              onClick={() => handlePresetSelect(preset.text)}
+              disabled={isLoading}
+              className="px-3.5 py-1.5 bg-[#2b3139] hover:bg-[#363d47] hover:border-[#fcd535]/50 text-[#eaecef] text-xs font-medium rounded-md border border-[#2b3139] transition-all disabled:opacity-50 text-left"
+            >
+              {preset.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Preset Buttons for One-Click Demoing */}
-      <div className="flex flex-wrap gap-2">
-        {PRESET_SCENARIOS.map((sc, idx) => (
-          <button
-            key={idx}
-            type="button"
-            onClick={() => handleSelectPreset(sc.text)}
-            disabled={isLoading}
-            className="px-3 py-1.5 bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-medium rounded-lg border border-slate-700/60 transition-colors disabled:opacity-50"
-          >
-            {sc.name}
-          </button>
-        ))}
-      </div>
+      {/* Input Form */}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <label className="text-xs font-semibold text-[#929aa5] uppercase tracking-wider">
+              Unstructured Request Text
+            </label>
+            <span className="text-[11px] font-mono text-[#707a8a]">
+              {inputText.length}/10,000 chars
+            </span>
+          </div>
 
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <div className="relative">
           <textarea
-            id="work-request-input-textarea"
-            rows={4}
-            value={text}
-            onChange={(e) => {
-              setText(e.target.value);
-              if (error) setError(null);
-            }}
+            id="work-request-textarea"
+            rows={5}
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            placeholder="e.g. Summarize our partner discussion, extract follow-ups, draft a thank-you email, and set a 7-day reminder..."
             disabled={isLoading}
-            placeholder="Paste an email, meeting notes, customer request, bug report, or instruction..."
-            className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 resize-none transition-all disabled:opacity-50"
+            className="w-full bg-[#0b0e11] border border-[#2b3139] focus:border-[#fcd535] rounded-lg p-4 text-xs text-[#eaecef] placeholder-[#707a8a] focus:outline-none focus:ring-1 focus:ring-[#fcd535] transition-all"
           />
-          <div className="absolute bottom-3 right-3 text-[11px] font-mono text-slate-500">
-            {text.length} characters
-          </div>
-        </div>
 
-        {error && (
-          <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-lg text-xs text-rose-400 flex items-center space-x-2">
-            <span>⚠</span>
-            <span>{error}</span>
-          </div>
-        )}
+          {error && <p className="text-xs text-[#f6465d] font-medium">{error}</p>}
+        </div>
 
         <div className="flex justify-end">
           <button
-            id="analyze-work-btn"
             type="submit"
-            disabled={isLoading || !text.trim()}
-            className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-lg shadow-lg shadow-indigo-600/20 border border-indigo-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+            id="submit-work-request-btn"
+            disabled={isLoading || !inputText.trim()}
+            className="px-6 py-2.5 bg-[#fcd535] hover:bg-[#f0b90b] text-[#181a20] text-xs font-bold uppercase tracking-wider rounded-md shadow-lg shadow-[#fcd535]/10 border border-[#fcd535] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center space-x-2"
           >
             {isLoading ? (
               <>
-                <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
+                <svg className="animate-spin h-4 w-4 text-[#181a20]" viewBox="0 0 24 24" fill="none">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                 </svg>
                 <span>Analyzing Work...</span>
               </>
             ) : (
-              <span>Analyze Work &rarr;</span>
+              <span>Analyze &amp; Generate Execution Plan &rarr;</span>
             )}
           </button>
         </div>

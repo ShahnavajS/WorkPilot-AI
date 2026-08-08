@@ -23,14 +23,14 @@ interface ExecutionPlanPanelProps {
 function getRouteBadge(route: string) {
   switch (route) {
     case "EXECUTE_AUTOMATICALLY":
-      return { label: "AUTO EXECUTE", bg: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" };
+      return { label: "AUTO EXECUTE", bg: "bg-[#0ecb81]/15 text-[#0ecb81] border-[#0ecb81]/30" };
     case "PREPARE_FOR_HUMAN_REVIEW":
-      return { label: "HUMAN REVIEW", bg: "bg-amber-500/10 text-amber-400 border-amber-500/20" };
+      return { label: "HUMAN REVIEW", bg: "bg-[#fcd535]/15 text-[#fcd535] border-[#fcd535]/40" };
     case "CANNOT_EXECUTE":
-      return { label: "CANNOT EXECUTE", bg: "bg-rose-500/10 text-rose-400 border-rose-500/20" };
+      return { label: "CANNOT EXECUTE", bg: "bg-[#f6465d]/15 text-[#f6465d] border-[#f6465d]/30" };
     case "REQUIRES_CLARIFICATION":
     default:
-      return { label: "NEEDS CLARIFICATION", bg: "bg-sky-500/10 text-sky-400 border-sky-500/20" };
+      return { label: "NEEDS CLARIFICATION", bg: "bg-[#3b82f6]/15 text-[#3b82f6] border-[#3b82f6]/30" };
   }
 }
 
@@ -46,13 +46,13 @@ export const ExecutionPlanPanel: React.FC<ExecutionPlanPanelProps> = ({
     workRequestStatus === "WAITING_FOR_APPROVAL";
 
   return (
-    <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-6 space-y-5 shadow-xl">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+    <div className="bg-[#1e2329] border border-[#2b3139] rounded-xl p-6 space-y-5 shadow-2xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2b3139] pb-4">
         <div>
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#707a8a]">
             Agentic Execution Plan
-          </h3>
-          <h4 className="text-lg font-bold text-white mt-1">Action Routing & Tool Selection</h4>
+          </span>
+          <h4 className="text-lg font-bold text-white tracking-tight mt-0.5">Action Routing &amp; Tool Selection</h4>
         </div>
 
         {canStartExecution && (
@@ -60,11 +60,11 @@ export const ExecutionPlanPanel: React.FC<ExecutionPlanPanelProps> = ({
             id="start-execution-btn"
             onClick={onExecute}
             disabled={isExecuting}
-            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold rounded-lg shadow-lg shadow-emerald-600/20 border border-emerald-500/30 transition-all disabled:opacity-50 flex items-center space-x-2"
+            className="px-5 py-2.5 bg-[#fcd535] hover:bg-[#f0b90b] text-[#181a20] text-xs font-bold uppercase tracking-wider rounded-md shadow-lg shadow-[#fcd535]/10 border border-[#fcd535] transition-all disabled:opacity-50 flex items-center space-x-2"
           >
             {isExecuting ? (
               <>
-                <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
+                <svg className="animate-spin h-4 w-4 text-[#181a20]" viewBox="0 0 24 24" fill="none">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                 </svg>
@@ -83,12 +83,12 @@ export const ExecutionPlanPanel: React.FC<ExecutionPlanPanelProps> = ({
           return (
             <div
               key={step.id || idx}
-              className="bg-slate-950/60 border border-slate-800 rounded-lg p-4 space-y-3"
+              className="bg-[#0b0e11] border border-[#2b3139] rounded-lg p-4 space-y-3"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="flex items-center space-x-3">
-                  <span className="font-mono text-xs text-indigo-400 font-bold">Step 0{idx + 1}</span>
-                  <h5 className="text-sm font-semibold text-slate-200">
+                  <span className="font-mono text-xs text-[#fcd535] font-bold">Step 0{idx + 1}</span>
+                  <h5 className="text-sm font-semibold text-[#eaecef]">
                     {step.actionItem?.description ?? "Planned Action"}
                   </h5>
                 </div>
@@ -96,22 +96,22 @@ export const ExecutionPlanPanel: React.FC<ExecutionPlanPanelProps> = ({
                   <span className={`px-2.5 py-0.5 rounded text-xs font-mono font-bold border ${badge.bg}`}>
                     {badge.label}
                   </span>
-                  <span className="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">
+                  <span className="text-[10px] font-mono text-[#707a8a] bg-[#2b3139] px-2 py-0.5 rounded">
                     {step.status}
                   </span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1 border-t border-slate-800/60">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-2 border-t border-[#2b3139]">
                 <div>
-                  <span className="text-slate-500 font-mono text-[10px] uppercase block">Selected Tool</span>
-                  <span className="font-mono text-slate-300 font-medium">
+                  <span className="text-[#707a8a] font-mono text-[10px] uppercase block">Selected Tool</span>
+                  <span className="font-mono text-[#eaecef] font-semibold">
                     {step.toolName ? step.toolName : "None (No tool)"}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-500 font-mono text-[10px] uppercase block">Routing Reason</span>
-                  <p className="text-slate-400 leading-normal">{step.reason}</p>
+                  <span className="text-[#707a8a] font-mono text-[10px] uppercase block">Routing Reason</span>
+                  <p className="text-[#929aa5] leading-normal">{step.reason}</p>
                 </div>
               </div>
             </div>
