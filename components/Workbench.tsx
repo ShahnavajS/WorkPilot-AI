@@ -27,8 +27,8 @@ export function Workbench() {
         const data = await res.json();
         setHistory(data.requests || []);
       }
-    } catch (_err) {
-      // Silent error for history fetching
+    } catch {
+      // Silent error
     }
   }, []);
 
@@ -40,7 +40,7 @@ export function Workbench() {
         const data = await res.json();
         setActiveWorkRequest(data.workRequest);
       }
-    } catch (_err) {
+    } catch {
       // Handle error
     }
   }, []);

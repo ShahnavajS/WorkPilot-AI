@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server";
 import { generateExecutionPlan } from "@/lib/ai/planner";
+import { createApiErrorResponse } from "@/lib/utils/api-response";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const body = await request.json().catch(() => null);
     const workRequestId = body?.workRequestId;
 
     if (!workRequestId || typeof workRequestId !== "string" || !workRequestId.trim()) {
-      return NextResponse.json(
-        { error: "Field 'workRequestId' is required and must be a non-empty string." },
-        { status: 400 }
+      return createApiErrorResponse(
+        "INVALID_INPUT",
+        "Field 'workRequestId' is required and must be a non-empty string.",
+        400
       );
     }
 
@@ -25,9 +27,12 @@ export async function POST(request: Request) {
     );
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : "Internal server error during planning.";
-    return NextResponse.json(
-      { error: errorMessage },
-      { status: 500 }
-    );
+    console.error(`[POST /api/plan Error]:`, error);
+
+    if (errorMessage.includes("not found")) {
+      return createApiErrorResponse("WORK_REQUEST_NOT_FOUND", errorMessage, 404);
+    }
+
+    return createApiErrorResponse("PLANNING_FAILED", errorMessage, 500);
   }
 }

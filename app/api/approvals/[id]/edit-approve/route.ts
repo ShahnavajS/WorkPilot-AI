@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { editAndApproveStep } from "@/lib/engine";
+import { createApiErrorResponse } from "@/lib/utils/api-response";
 
 export async function POST(
   request: Request,
@@ -8,21 +9,30 @@ export async function POST(
   try {
     const { id: approvalId } = await params;
     if (!approvalId) {
-      return NextResponse.json({ error: "Approval ID is required." }, { status: 400 });
+      return createApiErrorResponse("INVALID_INPUT", "Approval ID parameter is required.", 400);
     }
 
-    const body = await request.json();
+    const body = await request.json().catch(() => ({}));
     const editedContent = body?.editedContent;
 
-    if (!editedContent || typeof editedContent !== "string") {
-      return NextResponse.json({ error: "Field 'editedContent' is required." }, { status: 400 });
+    if (!editedContent || typeof editedContent !== "string" || !editedContent.trim()) {
+      return createApiErrorResponse("INVALID_INPUT", "Field 'editedContent' is required and must be a non-empty string.", 400);
     }
 
     const result = await editAndApproveStep(approvalId, editedContent, body?.reviewerNote);
 
-    return NextResponse.json({ message: "Content updated and approval granted.", ...result }, { status: 200 });
+    return NextResponse.json({ message: "Approval edited and granted successfully.", ...result }, { status: 200 });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Internal error editing and approving step.";
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error(`[POST /api/approvals/[id]/edit-approve Error]:`, error);
+
+    if (msg.includes("not found")) {
+      return createApiErrorResponse("APPROVAL_NOT_FOUND", msg, 404);
+    }
+    if (msg.includes("already resolved")) {
+      return createApiErrorResponse("APPROVAL_ALREADY_RESOLVED", msg, 409);
+    }
+
+    return createApiErrorResponse("EDIT_APPROVAL_FAILED", msg, 500);
   }
 }
