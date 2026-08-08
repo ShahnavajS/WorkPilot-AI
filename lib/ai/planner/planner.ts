@@ -13,6 +13,7 @@ import { PlannerOutputSchema, type PlannedStep } from "./schemas";
 import { PLANNER_SYSTEM_PROMPT, buildPlannerUserPrompt } from "./prompts";
 import { validateAndEnforcePlanSafety } from "./validator";
 import { findCapabilityForActionType } from "./capabilities";
+import { getAIClient, getAIModel } from "../client";
 
 export interface PlanOptions {
   openaiClient?: OpenAI;
@@ -72,14 +73,11 @@ export async function generateExecutionPlan(
   let candidateSteps: PlannedStep[] = [];
 
   try {
-    const openai =
-      options.openaiClient ??
-      new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY || "dummy-key-for-test",
-      });
+    const openai = getAIClient(options.openaiClient);
+    const modelName = getAIModel();
 
     const completion = await openai.beta.chat.completions.parse({
-      model: "gpt-4o-mini",
+      model: modelName,
       messages: [
         { role: "system", content: PLANNER_SYSTEM_PROMPT },
         {

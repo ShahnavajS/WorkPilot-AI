@@ -6,6 +6,8 @@ import {
 } from "./schemas";
 import { INTERPRETER_SYSTEM_PROMPT, buildInterpreterUserPrompt } from "./prompts";
 
+import { getAIClient, getAIModel } from "./client";
+
 export interface InterpretOptions {
   openaiClient?: OpenAI;
   currentTimestamp?: Date;
@@ -13,7 +15,7 @@ export interface InterpretOptions {
 
 /**
  * Low-level AI Interpreter function.
- * Converts unstructured work text into a validated InterpretationResult using OpenAI and Zod.
+ * Converts unstructured work text into a validated InterpretationResult using OpenAI/Groq and Zod.
  * Does NOT perform database operations.
  */
 export async function interpretWorkRequest(
@@ -28,11 +30,8 @@ export async function interpretWorkRequest(
   const currentTimestamp = options.currentTimestamp ?? new Date();
 
   // Instantiate client if not provided
-  const openai =
-    options.openaiClient ??
-    new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY || "dummy-key-for-test",
-    });
+  const openai = getAIClient(options.openaiClient);
+  const modelName = getAIModel();
 
   const userPrompt = buildInterpreterUserPrompt(trimmed, currentTimestamp);
 
@@ -45,7 +44,7 @@ export async function interpretWorkRequest(
     try {
       // Use OpenAI structured outputs with Zod response format
       const completion = await openai.beta.chat.completions.parse({
-        model: "gpt-4o-mini",
+        model: modelName,
         messages: [
           { role: "system", content: INTERPRETER_SYSTEM_PROMPT },
           { role: "user", content: userPrompt },
