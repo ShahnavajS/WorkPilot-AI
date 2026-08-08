@@ -1,36 +1,133 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WorkPilot AI — Agentic Work Intake & Execution Prototype
 
-## Getting Started
+An agentic AI work-intake and execution platform built with Next.js, TypeScript, Tailwind CSS, PostgreSQL, Prisma ORM, and the OpenAI API.
 
-First, run the development server:
+WorkPilot AI converts unstructured requests (emails, meeting notes, slack messages) into structured interpretations, deterministic action plans, bounded tool executions, human-in-the-loop approvals, and audit trails.
 
+---
+
+## 🚀 Key Architecture & Features
+
+1. **AI Structured Interpretation**: Extracts title, summary, priority level, detected deadlines, missing information, automatable candidates, and required human confirmation.
+2. **Agentic Action Routing**: Routes action items deterministically to one of 4 routes:
+   - `EXECUTE_AUTOMATICALLY` (emerald badge)
+   - `PREPARE_FOR_HUMAN_REVIEW` (amber badge)
+   - `CANNOT_EXECUTE` (rose badge)
+   - `REQUIRES_CLARIFICATION` (sky badge)
+3. **Bounded Tool System**: Registered tools (`create_task`, `draft_communication`, `generate_brief`, `website_check`) with SSRF protection and input validation.
+4. **Human-in-the-Loop (HITL) Governance**: Automatically pauses external communications at `WAITING_FOR_APPROVAL`. Supports draft inspection, inline editing, reviewer notes, approval state transition, and execution resumption.
+5. **Persisted Activity Trace**: Complete system audit trail saved to PostgreSQL (`ActivityEvent`).
+6. **Full-Stack Operations Workbench**: Interactive UI with scenario preset buttons, visual step indicators, draft editor, artifact viewer, and work history.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 15 (App Router, React 19)
+- **Language**: TypeScript (Strict mode)
+- **Styling**: Tailwind CSS v4
+- **Database**: PostgreSQL 16
+- **ORM**: Prisma ORM v5
+- **AI Engine**: OpenAI SDK (`gpt-4o-mini`) + Zod Schema Validation
+- **Testing**: Vitest v3 (68 tests)
+
+---
+
+## 💻 Local Development Setup
+
+### 1. Prerequisites
+- Node.js v20+
+- Docker & Docker Compose (for local PostgreSQL)
+
+### 2. Install Dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Environment Configuration
+Copy `.env.example` to `.env` and configure your settings:
+```bash
+cp .env.example .env
+```
+Fill in your `OPENAI_API_KEY`:
+```env
+DATABASE_URL="postgresql://workpilot:workpilot_pass@localhost:5432/workpilot_db?schema=public"
+OPENAI_API_KEY="your-openai-api-key-here"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Start PostgreSQL Container
+```bash
+docker compose up postgres -d
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 5. Initialize Database Schema & Seed Data
+```bash
+npx prisma db push
+npm run db:seed
+```
 
-## Learn More
+### 6. Run Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🧪 Running Tests & Build Verification
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+# Run Vitest Unit, Integration & E2E Tests (68 tests)
+npm run test
 
-## Deploy on Vercel
+# Run TypeScript Compilation Check
+npx tsc --noEmit
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Run ESLint Audit
+npm run lint
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Run Production Build
+npm run build
+
+# Start Local Production Server
+npm run start
+```
+
+---
+
+## 🐳 Docker Deployment
+
+To run the complete production application and database in Docker:
+
+```bash
+docker compose up --build -d
+```
+
+Access the application at `http://localhost:3000`.
+
+---
+
+## 🌐 Production Deployment Guide (Vercel / Cloud)
+
+### 1. Environment Variables
+Set the following environment variables in your deployment platform settings:
+- `DATABASE_URL`: Managed PostgreSQL connection string
+- `OPENAI_API_KEY`: Production OpenAI API key
+- `NEXT_PUBLIC_APP_URL`: Production application URL
+
+### 2. Database Migration
+Run database migrations against your production database:
+```bash
+npx prisma migrate deploy
+```
+
+### 3. Build & Deploy
+Deploy to Vercel or your preferred cloud provider. The build command will automatically run `next build`.
+
+---
+
+## 📊 Health & Readiness Probes
+
+- **Liveness Probe**: `GET /api/health` — Returns `200 OK` `{ status: "ok", service: "workpilot-ai" }`
+- **Readiness Probe**: `GET /api/ready` — Returns `200 OK` `{ status: "ready", database: "connected" }`
